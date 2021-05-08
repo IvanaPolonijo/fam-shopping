@@ -23,5 +23,7 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-### Customize configuration
-Use case diagram [Click Here](https://lucid.app/lucidchart/invitations/accept/inv_36fcbbda-2110-450d-886d-a49954f2099d?viewport_loc=-11%2C-11%2C2136%2C1119%2C0_0).
+### Diagrams
+UML Use diagram [Click Here](https://lucid.app/documents/view/ca280b87-a5fe-4f2d-a9dc-ff632055f834).
+UML class diagram [Click Here](https://lucid.app/lucidchart/b3d0fddc-207f-4357-b76a-1c9f06ba6b2f/view?page=HWEp-vi-RSFO#).
+
