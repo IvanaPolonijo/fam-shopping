@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Login/>
-    <particles-bg type="random" :canvas="{backgroundColor:'#888'}" :bg="true"> </particles-bg>
+    <particles-bg type="cobweb" :canvas="{backgroundColor:'#888'}" :bg="true"> </particles-bg>
   </div>
 </template>
 

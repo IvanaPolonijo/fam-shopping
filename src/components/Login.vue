@@ -1,33 +1,43 @@
 <template>
   <div class="centered-container">
-    <md-content class="md-elevation-3">
+    <content>
       <div class="title">
-        <img src="https://github.com/lindelof/particles-bg-vue/raw/master/images/logo.png?raw=true">
-        <div class="md-title">particles-bg-vue</div>
-        <div class="md-body-1">A Vue.js particles animation background component</div>
+        <div>
+          A Vue.js particles animation background component
+        </div>
       </div>
 
-      <div class="form">
-        <md-field>
-          <label>E-mail</label>
-          <md-input v-model="login.email" autofocus></md-input>
-        </md-field>
+      <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+        <b-form-group
+          id="input-group-1"
+          label="Email address:"
+          label-for="email"
+          description="We'll never share your email with anyone else."
+        >
+          <b-form-input
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder="Enter email"
+            required
+          ></b-form-input>
+        </b-form-group>
 
-        <md-field md-has-password>
-          <label>Password</label>
-          <md-input v-model="login.password" type="password"></md-input>
-        </md-field>
-      </div>
+        <b-form-group 
+        id="password" 
+        label="Passwor" 
+        label-for="password">
 
-      <div class="actions md-layout md-alignment-center-space-between">
-        <a href="/resetpassword">Reset password</a>
-        <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
-      </div>
+          <b-form-input
+            id="password"
+            v-model="password"
+            placeholder="Enter password"
+            required
+          ></b-form-input>
 
-      <div class="loading-overlay" v-if="loading">
-        <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
-      </div>
-    </md-content>
+        </b-form-group>
+      </b-form>
+    </content>
   </div>
 </template>
 
@@ -39,8 +49,8 @@ export default {
       loading: false,
       login: {
         email: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   },
   methods: {
@@ -51,8 +61,8 @@ export default {
       setTimeout(() => {
         this.loading = false;
       }, 5000);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -66,38 +76,14 @@ export default {
   .title {
     text-align: center;
     margin-bottom: 30px;
-    img {
-      margin-bottom: 16px;
-      max-width: 300px;
-    }
   }
-  .actions {
-    .md-button {
-      margin: 0;
-    }
-  }
-  .form {
-    margin-bottom: 60px;
-  }
-  .md-content {
+  .content {
     z-index: 1;
     padding: 40px;
     width: 100%;
     max-width: 400px;
+    background: rgb(255, 255, 255); 
     position: relative;
-  }
-  .loading-overlay {
-    z-index: 10;
-    top: 0;
-    left: 0;
-    right: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 </style>
