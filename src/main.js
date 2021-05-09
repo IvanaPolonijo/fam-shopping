@@ -7,6 +7,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import router from './router'
 
+// From https://vue-particles.netlify.app/
+import VueParticles from 'vue-particles'
+
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
 
@@ -14,6 +17,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
+
+Vue.use(VueParticles)
 
 new Vue({
   router,

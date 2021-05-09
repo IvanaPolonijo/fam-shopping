@@ -1,9 +1,19 @@
 <template>
-<div class="container-fluid">
-
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div id="app">
+    <Login/>
+    <particles-bg type="random" :canvas="{backgroundColor:'#888'}" :bg="true"> </particles-bg>
   </div>
-  </div>
-
 </template>
+
+<script>
+import { ParticlesBg } from "particles-bg-vue";
+import Login from "@/components/Login";
+
+export default {
+  name: "App",
+  components: {
+    ParticlesBg,
+    Login
+  },
+};
+</script>
