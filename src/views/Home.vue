@@ -1,18 +1,31 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="home">
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-5">
+        <Login />
+      </div>
+      <div class="col"></div>
+    </div>
+
+    <particles-bg
+      type="square"
+      :canvas="{ backgroundColor: '#888' }"
+      :bg="true"
+    >
+    </particles-bg>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { ParticlesBg } from "particles-bg-vue";
+import Login from "@/components/Login";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    HelloWorld
-  }
-}
+    ParticlesBg,
+    Login,
+  },
+};
 </script>

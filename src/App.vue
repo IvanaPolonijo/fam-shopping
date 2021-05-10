@@ -1,10 +1,21 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <b-row>
+        <b-col>
+          <b-navbar-brand align="left" tag="h1" class="mb-0">
+            FamPoloShopping
+          </b-navbar-brand>
+        </b-col>
+        <b-col>
+          <b-nav align="right">
+            <b-button @click="$router.push('/')">Login</b-button>
+            <b-button @click="$router.push('about')">About</b-button>
+          </b-nav>
+        </b-col>
+      </b-row>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -19,8 +30,8 @@
 
 #nav {
   padding: 30px;
+  background: white;
 }
-
 #nav a {
   font-weight: bold;
   color: #2c3e50;
