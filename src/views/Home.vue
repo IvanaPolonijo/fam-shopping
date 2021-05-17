@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col"></div>
       <div class="col-8">
-        <Login />
+        <LoginForm />
       </div>
       <div class="col"></div>
     </div>
@@ -18,13 +18,13 @@
 
 <script>
 import { ParticlesBg } from "particles-bg-vue";
-import Login from "@/components/Login";
+import LoginForm from "@/components/login-form";
 
 export default {
   name: "Home",
   components: {
     ParticlesBg,
-    Login,
+    LoginForm,
   },
 };
 </script>
