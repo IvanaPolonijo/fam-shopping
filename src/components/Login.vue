@@ -34,7 +34,9 @@
           <hr class="solid">
           <p>...uvijek možete putem vašeg Google računa...</p>
           <div>
-            <img @click="something" class="responsive" src='../assets\btn_google_signin_light_normal_web@2x.png'/>
+            <b-button>Login</b-button>
+            <!--Issue here - for some reason not deplyoing on netlify due to this  
+              <img @click="something" class="responsive" src='../assets\btn_google_signin_light_normal_web@2x.png'/> -->
           </div>
         </b-form>
       </content>
