@@ -10,7 +10,7 @@
         <b-col>
           <b-nav align="right">
             <b-button class="button" @click="$router.push('/')">Login</b-button>
-            <b-button @click="$router.push('about')">About</b-button>
+            <b-button class="button" @click="$router.push('about')">About</b-button>
           </b-nav>
         </b-col>
       </b-row>
@@ -31,7 +31,9 @@
 #nav {
   padding: 30px;
   background: white;
+
 }
+
 #nav a {
   font-weight: bold;
   color: #2c3e50;
@@ -42,7 +44,8 @@
 }
 
 .button {
-  margin-inline-end: 20px;
+  margin-right: 20px;
 
 }
+
 </style>

@@ -18,7 +18,7 @@
 
 <script>
 import { ParticlesBg } from "particles-bg-vue";
-import HelloWorld from "@/components/HelloWorld";
+import HelloWorld from "@/components/hello-world";
 
 export default {
   name: "App",
