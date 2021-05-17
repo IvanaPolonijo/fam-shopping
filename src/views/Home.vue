@@ -1,13 +1,12 @@
 <template>
-  <div id="home">
+  <div class="container">
     <div class="row">
       <div class="col"></div>
-      <div class="col-5">
+      <div class="col-8">
         <Login />
       </div>
       <div class="col"></div>
     </div>
-
     <particles-bg
       type="square"
       :canvas="{ backgroundColor: '#888' }"

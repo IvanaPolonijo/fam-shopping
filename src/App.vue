@@ -9,7 +9,7 @@
         </b-col>
         <b-col>
           <b-nav align="right">
-            <b-button @click="$router.push('/')">Login</b-button>
+            <b-button class="button" @click="$router.push('/')">Login</b-button>
             <b-button @click="$router.push('about')">About</b-button>
           </b-nav>
         </b-col>
@@ -39,5 +39,10 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.button {
+  margin-inline-end: 20px;
+
 }
 </style>
