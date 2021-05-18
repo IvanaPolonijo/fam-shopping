@@ -34,7 +34,7 @@ export default {
 
 <style>
 .item-card {
-  padding: 20px 0;
+  padding: 15px 0;
   text-align: left;
 }
 </style>
