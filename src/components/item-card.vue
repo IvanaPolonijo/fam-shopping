@@ -5,19 +5,29 @@
         >Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text
       >
       <b-card-body>
-        <tags-pill /><tags-pill /><tags-pill />
+        <vue-tags-input
+      v-model="tag"
+      :tags="tags"
+      @tags-changed="newTags => tags = newTags"
+    />
       </b-card-body>
     </b-card>
   </div>
 </template>
 
 <script>
-import TagsPill from "../components/tags-pill";
+import VueTagsInput from '@johmun/vue-tags-input';
 
 export default {
   name: "ItemCard",
   components: {
-    TagsPill,
+    VueTagsInput,
+  },
+  data() {
+    return {
+      tag: '',
+      tags: [],
+    };
   },
 };
 </script>
