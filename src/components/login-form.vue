@@ -4,7 +4,7 @@
       <content>
         <h1>Hej Polonijevi!!! Uletite...</h1>
 
-        <b-form @submit="onSubmit">
+        <b-form>
           <b-form-group
             class="login"
             id="input-group-1"
@@ -20,7 +20,12 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-form-group class="login" id="password" label="Password" label-for="password">
+          <b-form-group
+            class="login"
+            id="password"
+            label="Password"
+            label-for="password"
+          >
             <b-form-input
               id="password"
               v-model="password"
@@ -29,9 +34,9 @@
             ></b-form-input>
           </b-form-group>
           <div>
-            <b-button>Login</b-button>
+            <b-button @click="enter()">Login</b-button>
           </div>
-          <hr class="solid">
+          <hr class="solid" />
           <p>...uvijek možete putem vašeg Google računa...</p>
           <div>
             <b-button>Login</b-button>
@@ -45,25 +50,30 @@
 </template>
 
 <script>
+import { firebase } from "@/firebase";
+
 export default {
   name: "LoginForm",
   data() {
     return {
-      loading: false,
-      login: {
         email: "",
         password: "",
-      },
     };
   },
   methods: {
-    auth() {
-      // your code to login user
-      // this is only for example of loading
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-      }, 5000);
+    enter() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then((result) => {
+          console.log("uspjesna prijava", result);
+        })
+        .then(() => {
+          this.$router.replace({ name: "ShopList" });
+        })
+        .catch(function (e) {
+          console.error("greska", e);
+        });
     },
   },
 };
