@@ -21,7 +21,10 @@ const routes = [
   {
     path:'/shoplist',
     name: 'ShopList',
-    component:() => import('../views/ShopList.vue')
+    component:() => import('../views/ShopList.vue'),
+    meta: {
+      needsVerification: true,
+    },
   },
   {
     path:'/test',

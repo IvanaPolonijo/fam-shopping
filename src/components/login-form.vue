@@ -38,8 +38,9 @@
           </div>
           <hr class="solid" />
           <p>...uvijek možete putem vašeg Google računa...</p>
+          //dodaj sliku i login with google
           <div>
-            <b-button>Login</b-button>
+            <b-button @click="enter">Login</b-button>
             <!--Issue here - for some reason not deplyoing on netlify due to this  
               <img @click="something" class="responsive" src='../assets\btn_google_signin_light_normal_web@2x.png'/> -->
           </div>
@@ -51,6 +52,7 @@
 
 <script>
 import { firebase } from "@/firebase";
+import store from "@/store";
 
 export default {
   name: "LoginForm",
@@ -68,6 +70,10 @@ export default {
         .then((result) => {
           console.log("uspjesna prijava", result);
         })
+        .then(()=> {
+          store.userVerified = this.email
+          console.log('korisnik je verificiran', store.userVerified)
+          })
         .then(() => {
           this.$router.replace({ name: "ShopList" });
         })
