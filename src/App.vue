@@ -11,7 +11,10 @@
         </b-col>
         <b-col>
           <b-nav align="right">
-            <b-button class="button" @click="$router.push('/')">Login</b-button>
+            <b-button class="button" v-if="this.userName === null" @click="$router.push('/')">Login</b-button>
+            <b-button class="button" v-if="this.userName !== null" @click="$router.push('/')">Login</b-button>
+            <!-- //ne radi - vidi zašto -->
+            <b-button class="button" v-if="this.userName !== null" @click="$router.push('/shoplist')">ShopList</b-button>
             <b-button @click="$router.push('about')">About</b-button>
           </b-nav>
         </b-col>
@@ -21,6 +24,33 @@
     <router-view />
   </div>
 </template>
+
+<script>
+import store from '@/store';
+import { firebase } from '@/firebase';
+import router from '@/router';
+
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/firebase.User
+    store.userVerified = user.email;
+    console.log('Da vidimo listener', store.userVerified)
+  } else {
+    router.push({ name: "Home" });
+  }
+});
+
+export default {
+  name: "app",
+  data() {
+    return {
+        userName: store.userVerified,
+    };
+  },
+}
+</script>
+
 
 <style>
 #nav {
