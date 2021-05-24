@@ -39,7 +39,5 @@ export default {
 <style scoped>
 .search {
   padding-top: 15px;
- 
-
 }
 </style>

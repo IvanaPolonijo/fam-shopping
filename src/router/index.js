@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store'
 import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
@@ -40,3 +41,16 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach((to, from, next) => {
+  console.log(
+    "Bio sam na",
+    from.name,
+    "idem na",
+    to.name,
+    "a korisnik je",
+    store.userVerified
+  );
+  if (to.meta.needsVerification && !store.userVerified) next({ name: 'Home' })
+  else next()
+})
