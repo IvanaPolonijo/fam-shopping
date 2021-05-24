@@ -1,3 +1,3 @@
 export default {
-    userVerified: null,
+    userVerified: false,
 }

@@ -52,7 +52,7 @@
 
 <script>
 import { firebase } from "@/firebase";
-import store from "@/store";
+// import store from "@/store";
 
 export default {
   name: "LoginForm",
@@ -70,13 +70,12 @@ export default {
         .then((result) => {
           console.log("uspjesna prijava", result);
         })
-        .then(()=> {
-          store.userVerified = this.email
-          console.log('korisnik je verificiran', store.userVerified)
-          })
-        .then(() => {
-          this.$router.replace({ name: "ShopList" });
-        })
+        // .then(()=> {
+        //   console.log('korisnik je verificiran', store.userVerified)
+        //   })
+        // .then(() => {
+        //   this.$router.replace({ name: "ShopList" });
+        // })
         .catch(function (e) {
           console.error("greska", e);
         });
