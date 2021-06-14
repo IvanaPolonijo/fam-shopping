@@ -38,11 +38,14 @@
           </div>
           <hr class="solid" />
           <p>...uvijek možete putem vašeg Google računa...</p>
-          //dodaj sliku i login with google
           <div>
-            <b-button @click="enter">Login</b-button>
-            <!--Issue here - for some reason not deplyoing on netlify due to this  
-              <img @click="something" class="responsive" src='../assets\btn_google_signin_light_normal_web@2x.png'/> -->
+            <!-- <b-button @click="enter">Login</b-button> -->
+            <button
+              @click="enterWithGoogle"
+              class="google-signin-button"
+            >
+              Continue with Google
+            </button>
           </div>
         </b-form>
       </content>
@@ -58,8 +61,8 @@ export default {
   name: "LoginForm",
   data() {
     return {
-        email: "",
-        password: "",
+      email: "",
+      password: "",
     };
   },
   methods: {
@@ -79,6 +82,20 @@ export default {
         .catch(function (e) {
           console.error("greska", e);
         });
+    },
+    enterWithGoogle(){
+      console.log("Login with google");
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then((result) => {
+          console.log("uspjesna prijava", result);
+        })
+        .catch(function (e) {
+          console.error("greska", e);
+        });
+    
     },
   },
 };
