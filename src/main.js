@@ -10,6 +10,11 @@ import router from './router'
 // From https://vue-particles.netlify.app/
 import VueParticles from 'vue-particles'
 
+// From https://vuejsexamples.com/simple-alert-for-vue-js/
+import VueSimpleAlert from "vue-simple-alert";
+
+Vue.use(VueSimpleAlert);
+
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
 
