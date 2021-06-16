@@ -1,8 +1,8 @@
 <template>
   <div class="item-card">
-    <b-card header="Info">
+    <b-card :header="card.ime">
       <b-card-text
-        >Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text
+        >{{card.opis}}</b-card-text
       >
       <b-card-body>
         <vue-tags-input
@@ -18,8 +18,10 @@
 <script>
 import VueTagsInput from '@johmun/vue-tags-input';
 
+
 export default {
   name: "ItemCard",
+  props: ['card'],
   components: {
     VueTagsInput,
   },
