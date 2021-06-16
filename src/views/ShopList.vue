@@ -31,7 +31,7 @@
                     type="opis"
                     class="form-control"
                     id="opis"
-                    placeholder="Nešto važno u vezi proizvoda?"
+                    placeholder="Nesto važno u vezi proizvoda?"
                   />
                 </div>
                 <b-card-body>
@@ -55,8 +55,13 @@
             </template>
           </b-modal>
         </template>
-        <item-card />
-        <item-card />
+        <item-card 
+          v-for='item in items'
+          :key='item.ime'
+          :card='item'
+          :ime='items.ime'
+          :opis='items.opis'
+        />
       </div>
       <div class="col-3">
         <div class="search">
@@ -86,7 +91,11 @@ export default {
       tags: [],
       ime: "",
       opis: "",
+      items: [],
     };
+  },
+  mounted() {
+    this.getCards();
   },
   methods: {
     postNewItem() {
@@ -111,6 +120,29 @@ export default {
           });
       }
     },
+    getCards(){
+      console.log("Vučem artikle");
+      db.collection('items')
+      .get()
+      .then((query)=>{
+        this.items = []
+        query.forEach((doc) => {
+          const data = doc.data();
+          this.items.push({
+            ime: data.ime,
+            opis: data.opis
+          })
+        });
+      }
+      )
+      .then(()=>{
+        console.log(this.items)
+        
+      })
+      .catch((e)=>{
+        console.log(e);
+      })
+    }
   },
 };
 </script>
