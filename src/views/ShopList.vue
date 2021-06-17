@@ -4,9 +4,7 @@
       <div class="col-1"></div>
       <div class="col-8">
         <template>
-          <b-button @click="$bvModal.show('modal')"
-            >Stvori novu pretplatu</b-button
-          >
+          <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
 
           <b-modal id="modal">
             <template #modal-header="{}">
@@ -55,26 +53,32 @@
             </template>
           </b-modal>
         </template>
+
         <!-- ovisno o stanju toggle checkera pokazujem sve ili samo aktive -->
         <div v-if="!checked">
-          <item-card
-            v-for="item in showItems"
-            :key="item.ime"
-            :card="item"
-            :ime="items.ime"
-            :opis="items.opis"
-          />
-        </div>
+          <div class="row">
+            <item-card
+              v-for="item in showItems"
+              :key="item.ime"
+              :card="item"
+              :ime="items.ime"
+              :opis="items.opis"
+            />
+          </div>
+        </div>  
         <div v-else>
-          <item-card
-            v-for="item in items"
-            :key="item.ime"
-            :card="item"
-            :ime="items.ime"
-            :opis="items.opis"
-          />
+            <div class="row">
+              <item-card
+                v-for="item in items"
+                :key="item.ime"
+                :card="item"
+                :ime="items.ime"
+                :opis="items.opis"
+              />
+            </div>
         </div>
       </div>
+
       <div class="col-3">
         <div class="search">
           <b-form-input v-model="text" placeholder="Find by tag"></b-form-input>

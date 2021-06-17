@@ -1,17 +1,18 @@
 <template>
-  <div class="item-card">
-    <b-card :header="card.ime">
-      <b-card-text
-        >{{card.opis}}</b-card-text
-      >
-      <b-card-body>
+  <div class="col-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{card.ime}}</h5>
+        <p class="card-text">{{card.opis}}</p>
         <vue-tags-input
       v-model="tag"
       :tags="tags"
       @tags-changed="newTags => tags = newTags"
     />
-      </b-card-body>
-    </b-card>
+        <a href="#" class="btn btn-primary">Kupljeno</a>
+        <a href="#" class="btn btn-primary">Uredi</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,5 +39,6 @@ export default {
 .item-card {
   padding: 15px 0;
   text-align: left;
+  margin-block: 3;
 }
 </style>
