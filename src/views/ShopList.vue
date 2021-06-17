@@ -4,9 +4,7 @@
       <div class="col-1"></div>
       <div class="col-8">
         <template>
-          <b-button @click="$bvModal.show('modal')"
-            >Stvori novu pretplatu</b-button
-          >
+          <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
 
           <b-modal id="modal">
             <template #modal-header="{}">
@@ -55,18 +53,44 @@
             </template>
           </b-modal>
         </template>
-        <item-card 
-          v-for='item in items'
-          :key='item.ime'
-          :card='item'
-          :ime='items.ime'
-          :opis='items.opis'
-        />
+
+        <!-- ovisno o stanju toggle checkera pokazujem sve ili samo aktive -->
+        <div v-if="!checked">
+          <div class="row">
+            <item-card
+              v-for="item in showItems"
+              :key="item.ime"
+              :card="item"
+              :ime="items.ime"
+              :opis="items.opis"
+            />
+          </div>
+        </div>  
+        <div v-else>
+            <div class="row">
+              <item-card
+                v-for="item in items"
+                :key="item.ime"
+                :card="item"
+                :ime="items.ime"
+                :opis="items.opis"
+              />
+            </div>
+        </div>
       </div>
+
       <div class="col-3">
         <div class="search">
           <b-form-input v-model="text" placeholder="Find by tag"></b-form-input>
           <div class="mt-2">Value za provjeru: {{ text }}</div>
+        </div>
+        <div>
+          <div class="form-check form-switch">
+            <b-form-checkbox v-model="checked" name="check-button" switch>
+              Zašto ne izgleda kao Switch Checkbox???
+              <b>(Checked: {{ checked }})</b>
+            </b-form-checkbox>
+          </div>
         </div>
       </div>
     </div>
@@ -86,16 +110,28 @@ export default {
   },
   data() {
     return {
-      text: "",
+      text: "", //za search
+      checked: false, //za checkbox toggle
       tag: "",
       tags: [],
       ime: "",
       opis: "",
+      status: "", //zapravo bool - kako deklarirati ovdje?
       items: [],
     };
   },
   mounted() {
     this.getCards();
+  },
+  computed: {
+    showItems() {
+      //prikazati samo aktivne items
+      let activeItems = [];
+      for (let item of this.items) {
+        if (item.status) activeItems.push(item);
+      }
+      return activeItems;
+    },
   },
   methods: {
     postNewItem() {
@@ -106,6 +142,7 @@ export default {
           .add({
             ime: this.ime,
             opis: this.opis,
+            status: 1,
             //moram riješiti tagove posebno
           })
           .then((docRef) => {
@@ -120,29 +157,28 @@ export default {
           });
       }
     },
-    getCards(){
+    getCards() {
       console.log("Vučem artikle");
-      db.collection('items')
-      .get()
-      .then((query)=>{
-        this.items = []
-        query.forEach((doc) => {
-          const data = doc.data();
-          this.items.push({
-            ime: data.ime,
-            opis: data.opis
-          })
+      db.collection("items")
+        .get()
+        .then((query) => {
+          this.items = [];
+          query.forEach((doc) => {
+            const data = doc.data();
+            this.items.push({
+              ime: data.ime,
+              opis: data.opis,
+              status: data.status,
+            });
+          });
+        })
+        .then(() => {
+          console.log(this.items);
+        })
+        .catch((e) => {
+          console.log(e);
         });
-      }
-      )
-      .then(()=>{
-        console.log(this.items)
-        
-      })
-      .catch((e)=>{
-        console.log(e);
-      })
-    }
+    },
   },
 };
 </script>
