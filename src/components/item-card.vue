@@ -9,7 +9,7 @@
           :tags="tags"
           @tags-changed="(newTags) => (tags = newTags)"
         />
-        <a :id="card.id" href="#" class="btn btn-primary">Kupljeno</a>
+        <b-button :id="card.id" v-on:click="saveBuy(card.id)">Kupljeno</b-button>
         <b-button :id="card.id" @click="showModal">Uredi</b-button>
       </div>
       <b-modal ref="my-modal" hide-footer title="Using Component Methods">
@@ -92,6 +92,23 @@ export default {
         })
         .then(() => {
           console.log(this.card.opis);
+          console.log("Document successfully written!");
+          this.hideModal();
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    },
+    saveBuy(message) {
+      console.log(message);
+      db.collection("items")
+        .doc(message)
+        .set({
+          ime: this.card.ime,
+          opis: this.card.opis,
+          status: 0,
+        })
+        .then(() => {
           console.log("Document successfully written!");
         })
         .catch((error) => {
