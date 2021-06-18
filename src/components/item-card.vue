@@ -47,7 +47,7 @@
           v-on:click="saveChange(card.id)"
           >Save</b-button
         >
-        <b-button class="mt-3" variant="outline-danger" block @click="hideModal"
+        <b-button class="mt-3" variant="outline-danger" block v-on:click="hideModal()"
           >Close Me</b-button
         >
       </b-modal>

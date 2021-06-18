@@ -122,9 +122,9 @@ export default {
       items: [],
     };
   },
-  mounted() {
+/*   mounted() {
     this.getCards();
-  },
+  }, */
   computed: {
     showItems() {
       //prikazati samo aktivne items
@@ -134,14 +134,14 @@ export default {
       }
       return activeItems;
     },
-    showOne() {
+/*     showOne() {
       //prikazati traženi artikal - smisli kako povući ID
       let oneItem = [];
       for (let item of this.items) {
         oneItem.push(item);
       }
       return oneItem;
-    },
+    }, */
   },
   methods: {
     postNewItem() {
@@ -155,19 +155,18 @@ export default {
             status: 1,
             //moram riješiti tagove posebno
           })
-          .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
+          .then(() => {
+            console.log("Document written");
           })
           .then(() => {
             this.$bvModal.hide("modal");
-            location.reload();
           })
           .catch((error) => {
             console.error("Error adding document: ", error);
           });
       }
     },
-    getCards() {
+    /* getCards() {
       console.log("Vučem artikle");
       db.collection("items")
         .get()
@@ -189,8 +188,28 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
+    }, */
   },
+  created(){
+      db.collection('items').onSnapshot(res => {
+
+        const changes = res.docChanges();
+        console.log("Vučem artikle u snapshot");
+        changes.forEach(change => {
+          if (change.type === "added"){
+            this.items.push({
+              ...change.doc.data(),
+              id: change.doc.id
+            })
+          }
+          if (change.type === "modified"){
+            change.doc.data();
+            console.log("promjena: ", change.doc.data());
+            }
+          }
+        )
+      })
+     },
 };
 </script>
 
