@@ -63,22 +63,23 @@
               :card="item"
               :ime="items.ime"
               :opis="items.opis"
+              :id="item.id"
             />
           </div>
-        </div>  
+        </div>
         <div v-else>
-            <div class="row">
-              <item-card
-                v-for="item in items"
-                :key="item.ime"
-                :card="item"
-                :ime="items.ime"
-                :opis="items.opis"
-              />
-            </div>
+          <div class="row">
+            <item-card
+              v-for="item in items"
+              :key="item.ime"
+              :card="item"
+              :ime="items.ime"
+              :opis="items.opis"
+              :id="item.id"
+            />
+          </div>
         </div>
       </div>
-
       <div class="col-3">
         <div class="search">
           <b-form-input v-model="text" placeholder="Find by tag"></b-form-input>
@@ -116,6 +117,7 @@ export default {
       tags: [],
       ime: "",
       opis: "",
+      id: "",
       status: "", //zapravo bool - kako deklarirati ovdje?
       items: [],
     };
@@ -131,6 +133,14 @@ export default {
         if (item.status) activeItems.push(item);
       }
       return activeItems;
+    },
+    showOne() {
+      //prikazati traženi artikal - smisli kako povući ID
+      let oneItem = [];
+      for (let item of this.items) {
+        oneItem.push(item);
+      }
+      return oneItem;
     },
   },
   methods: {
@@ -169,6 +179,7 @@ export default {
               ime: data.ime,
               opis: data.opis,
               status: data.status,
+              id: doc.id,
             });
           });
         })
