@@ -59,7 +59,7 @@
           <div class="row">
             <item-card
               v-for="item in showItems"
-              :key="item.ime"
+              :key="item.id"
               :card="item"
               :ime="items.ime"
               :opis="items.opis"
@@ -71,7 +71,7 @@
           <div class="row">
             <item-card
               v-for="item in items"
-              :key="item.ime"
+              :key="item.id"
               :card="item"
               :ime="items.ime"
               :opis="items.opis"
@@ -134,14 +134,6 @@ export default {
       }
       return activeItems;
     },
-/*     showOne() {
-      //prikazati traženi artikal - smisli kako povući ID
-      let oneItem = [];
-      for (let item of this.items) {
-        oneItem.push(item);
-      }
-      return oneItem;
-    }, */
   },
   methods: {
     postNewItem() {
@@ -205,7 +197,7 @@ export default {
           if (change.type === "modified"){
             change.doc.data();
             console.log("promjena: ", change.doc.data());
-            }
+            } 
           }
         )
       })
