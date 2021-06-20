@@ -7,7 +7,7 @@
         <vue-tags-input
           v-model="tag"
           :tags="tags"
-          @tags-changed="(newTags) => (tags = newTags)"
+          @tags-changed="storeTag"
         />
         <b-button :id="card.id" v-on:click="saveBuy(card.id)">Kupljeno</b-button>
         <b-button :id="card.id" @click="showModal">Uredi</b-button>
@@ -32,13 +32,14 @@
               placeholder="Nesto važno u vezi proizvoda?"
             />
           </div>
-          <b-card-body>
+<!--           <b-card-body>
             <vue-tags-input
               v-model="tag"
+              :tag ="tag"
               :tags="tags"
-              @tags-changed="(newTags) => (tags = newTags)"
+              @tags-changed="storeTag()"
             />
-          </b-card-body>
+          </b-card-body> -->
         </form>
         <b-button
           class="mt-3"
@@ -114,6 +115,21 @@ export default {
         .catch((error) => {
           console.error("Error writing document: ", error);
         });
+    },
+    storeTag(newTags){
+      this.tags = newTags;
+      console.log("storeTag card ID; ", newTags, " novi tag je ", newTags);
+      /* db.collection("tag")
+      .doc()
+      .set({
+        tagName: newTags,
+      })
+      .then(()=> {
+        console.log("uspješno upisan tag", newTags)
+      })
+      .catch((error) => {
+          console.error("Error writing document: ", error);
+        }); */
     },
   },
 };
