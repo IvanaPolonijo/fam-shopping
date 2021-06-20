@@ -36,7 +36,6 @@
                   <vue-tags-input
                     v-model="tag"
                     :tags="tags"
-                    @tags-changed="(newTags) => (tags = newTags)"
                   />
                 </b-card-body>
               </form>

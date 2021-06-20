@@ -2,39 +2,37 @@
   <div class="container">
     <div class="row">
       <div class="col"></div>
-      <div class="col-6">
-        <HelloWorld />
-        <vue-tags-input
-      v-model="tag"
-      :tags="tags"
-      @tags-changed="newTags => tags = newTags"
-    />
-      </div>
-      <div class="col">
-      </div>
+        <div>
+    <label for="tags-pills">Enter tags</label>
+    <b-form-tags
+      input-id="tags-pills"
+      v-model="value"
+      tag-variant="primary"
+      tag-pills
+      size="lg"
+      separator=" "
+      placeholder="Enter new tags separated by space"
+    ></b-form-tags>
+    <p class="mt-2">Value: {{ value }}</p>
+  </div>
+      <div class="col"></div>
     </div>
   </div>
 </template>
 
 
 <script>
-import HelloWorld from "@/components/hello-world";
-import VueTagsInput from '@johmun/vue-tags-input';
 
 
 export default {
   name: "Test",
   components: {
-    HelloWorld,
-    VueTagsInput
-
   },
   data() {
-      return {
-      tag: '',
-      tags: [],
+    return {
+       value: ['apple', 'orange', 'grape']
     };
-    }
+  },
 };
 </script>
 

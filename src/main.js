@@ -21,6 +21,10 @@ Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 
+// Just in case - boostrap vue tags
+import { FormTagsPlugin } from 'bootstrap-vue'
+Vue.use(FormTagsPlugin)
+
 Vue.config.productionTip = false
 
 Vue.use(VueParticles)
