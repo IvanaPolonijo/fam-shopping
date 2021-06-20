@@ -36,6 +36,7 @@
                   <vue-tags-input
                     v-model="tag"
                     :tags="tags"
+                    @tags-changed="storeTag"
                   />
                 </b-card-body>
               </form>
@@ -101,6 +102,7 @@
 import ItemCard from "../components/item-card.vue";
 import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
+import store from "@/store";
 
 export default {
   name: "ShopList",
@@ -157,6 +159,22 @@ export default {
           });
       }
     },
+    storeTag(newTags){
+      console.log("duzina arraya tagova: ", newTags.length)
+      console.log("stanje tagova: ", newTags, " a dodan je tag: ", newTags[newTags.length].text, " a za card ID ", this.card.id);
+      db.collection("tag")
+      .doc()
+      .set({
+        tagName: newTags[newTags.length].text,
+        //tagAssigned: this.card.id,
+      })
+      .then(()=> {
+        console.log("uspješno upisan tag", newTags[newTags.length].text)//meni za testiranje
+      })
+      .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    },
     /* getCards() {
       console.log("Vučem artikle");
       db.collection("items")
@@ -199,8 +217,27 @@ export default {
             } 
           }
         )
-      })
-     },
+      });
+    db.collection('tag').onSnapshot(res => {
+        const changesTag = res.docChanges();
+        console.log("Vučem u snapshot tagova");
+        changesTag.forEach(change => {
+          if (change.type === "added"){
+            store.allTags.push({
+              ...change.doc.data()
+              
+            })
+          }
+          if (change.type === "modified"){
+            change.doc.data();
+            console.log("promjena: ", change.doc.data());
+            } 
+          }
+        )
+        let localTags = store.allTags
+        console.log("localni tagovi : ", localTags)//meni za testiranje 
+    })
+}
 };
 </script>
 

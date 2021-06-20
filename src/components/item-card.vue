@@ -8,9 +8,11 @@
           v-model="tag"
           :tags="tags"
           :cardID="card.id"
-          @tags-changed="storeTag"
+          @tags-changed="storeTagLocal"
         />
-        <b-button :id="card.id" v-on:click="saveBuy(card.id)">Kupljeno</b-button>
+        <b-button :id="card.id" v-on:click="saveBuy(card.id)"
+          >Kupljeno</b-button
+        >
         <b-button :id="card.id" @click="showModal">Uredi</b-button>
       </div>
       <b-modal ref="my-modal" hide-footer title="Using Component Methods">
@@ -33,7 +35,7 @@
               placeholder="Nesto važno u vezi proizvoda?"
             />
           </div>
-<!--           <b-card-body>
+          <!--           <b-card-body>
             <vue-tags-input
               v-model="tag"
               :tag ="tag"
@@ -49,7 +51,11 @@
           v-on:click="saveChange(card.id)"
           >Save</b-button
         >
-        <b-button class="mt-3" variant="outline-danger" block v-on:click="hideModal()"
+        <b-button
+          class="mt-3"
+          variant="outline-danger"
+          block
+          v-on:click="hideModal()"
           >Close Me</b-button
         >
       </b-modal>
@@ -91,9 +97,10 @@ export default {
           ime: this.card.ime,
           opis: this.card.opis,
           status: 1,
+          tags: this.itemsTags,
         })
         .then(() => {
-          console.log(this.card.opis);
+          console.log(this.card);
           console.log("Document successfully written!");
           this.hideModal();
         })
@@ -109,6 +116,7 @@ export default {
           ime: this.card.ime,
           opis: this.card.opis,
           status: 0,
+          tags: this.tags,
         })
         .then(() => {
           console.log("Document successfully written!");
@@ -117,19 +125,26 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
-    storeTag(newTags){
-      this.tags = newTags;
-      console.log("stanje tagova: ", this.tags, " prvi tag: ", newTags[0].text, " a za card ID ", this.card.id);
+    storeTagLocal(newTags) {
+      console.log("duzina arraya tagova: ", newTags.length);
+      console.log(
+        "stanje tagova: ",
+        newTags,
+        " a dodan je tag: ",
+        newTags[newTags.length-1].text,
+        " a za card ID ",
+        this.card.id
+      );
       db.collection("tag")
-      .doc()
-      .set({
-        tagName: newTags[0].text,
-        tagAssigned: this.card.id,
-      })
-      .then(()=> {
-        console.log("uspješno upisan tag", newTags[0].text)
-      })
-      .catch((error) => {
+        .doc()
+        .set({
+          tagName: newTags[newTags.length-1].text,
+          tagAssigned: this.card.id,
+        })
+        .then(() => {
+          console.log("uspješno upisan tag", newTags[newTags.length-1].text); //meni za testiranje
+        })
+        .catch((error) => {
           console.error("Error writing document: ", error);
         });
     },
