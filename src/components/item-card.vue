@@ -7,6 +7,7 @@
         <vue-tags-input
           v-model="tag"
           :tags="tags"
+          :cardID="card.id"
           @tags-changed="storeTag"
         />
         <b-button :id="card.id" v-on:click="saveBuy(card.id)">Kupljeno</b-button>
@@ -118,18 +119,19 @@ export default {
     },
     storeTag(newTags){
       this.tags = newTags;
-      console.log("storeTag card ID; ", newTags, " novi tag je ", newTags);
-      /* db.collection("tag")
+      console.log("stanje tagova: ", this.tags, " prvi tag: ", newTags[0].text, " a za card ID ", this.card.id);
+      db.collection("tag")
       .doc()
       .set({
-        tagName: newTags,
+        tagName: newTags[0].text,
+        tagAssigned: this.card.id,
       })
       .then(()=> {
-        console.log("uspješno upisan tag", newTags)
+        console.log("uspješno upisan tag", newTags[0].text)
       })
       .catch((error) => {
           console.error("Error writing document: ", error);
-        }); */
+        });
     },
   },
 };

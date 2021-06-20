@@ -2,10 +2,12 @@
   <div class="container">
     <div class="row">
       <div class="col"></div>
+
         <div>
     <label for="tags-pills">Enter tags</label>
     <b-form-tags
       input-id="tags-pills"
+      data-role="tagsinput" 
       v-model="value"
       tag-variant="primary"
       tag-pills
@@ -13,7 +15,6 @@
       separator=" "
       placeholder="Enter new tags separated by space"
     ></b-form-tags>
-    <p class="mt-2">Value: {{ value }}</p>
   </div>
       <div class="col"></div>
     </div>
@@ -36,5 +37,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
+
 </style>
