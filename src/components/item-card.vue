@@ -35,14 +35,12 @@
               placeholder="Nesto važno u vezi proizvoda?"
             />
           </div>
-          <!--           <b-card-body>
-            <vue-tags-input
-              v-model="tag"
-              :tag ="tag"
-              :tags="tags"
-              @tags-changed="storeTag()"
-            />
-          </b-card-body> -->
+          <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            :cardID="card.id"
+            @tags-changed="storeTagLocal"
+          />
         </form>
         <b-button
           class="mt-3"
@@ -77,6 +75,7 @@ export default {
     return {
       tag: "",
       tags: [],
+      itemTags: [],
       ime: "",
       opis: "",
       id: "",
@@ -97,7 +96,7 @@ export default {
           ime: this.card.ime,
           opis: this.card.opis,
           status: 1,
-          tags: this.itemsTags,
+          itemsTags: this.itemsTags,
         })
         .then(() => {
           console.log(this.card);
@@ -116,7 +115,7 @@ export default {
           ime: this.card.ime,
           opis: this.card.opis,
           status: 0,
-          tags: this.tags,
+          tags: this.itemTags,
         })
         .then(() => {
           console.log("Document successfully written!");
@@ -131,18 +130,19 @@ export default {
         "stanje tagova: ",
         newTags,
         " a dodan je tag: ",
-        newTags[newTags.length-1].text,
+        newTags[newTags.length - 1].text,
         " a za card ID ",
         this.card.id
       );
       db.collection("tag")
         .doc()
         .set({
-          tagName: newTags[newTags.length-1].text,
+          tagName: newTags[newTags.length - 1].text,
           tagAssigned: this.card.id,
         })
         .then(() => {
-          console.log("uspješno upisan tag", newTags[newTags.length-1].text); //meni za testiranje
+          this.itemTags.push(newTags[newTags.length - 1].text);
+          console.log("trenutni array za dodati itemu je ", this.itemTags);
         })
         .catch((error) => {
           console.error("Error writing document: ", error);

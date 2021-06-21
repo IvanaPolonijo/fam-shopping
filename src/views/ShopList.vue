@@ -116,6 +116,7 @@ export default {
       checked: false, //za checkbox toggle
       tag: "",
       tags: [],
+      itemTags: [],
       ime: "",
       opis: "",
       id: "",
@@ -146,6 +147,7 @@ export default {
             ime: this.ime,
             opis: this.opis,
             status: 1,
+            itemTags: this.itemTags,
             //moram riješiti tagove posebno
           })
           .then(() => {
@@ -160,18 +162,27 @@ export default {
       }
     },
     storeTag(newTags){
-      console.log("duzina arraya tagova: ", newTags.length)
-      console.log("stanje tagova: ", newTags, " a dodan je tag: ", newTags[newTags.length].text, " a za card ID ", this.card.id);
+      console.log("duzina arraya tagova: ", newTags.length);
+      console.log(
+        "stanje tagova: ",
+        newTags,
+        " a dodan je tag: ",
+        newTags[newTags.length-1].text,
+      );
       db.collection("tag")
-      .doc()
-      .set({
-        tagName: newTags[newTags.length].text,
-        //tagAssigned: this.card.id,
-      })
-      .then(()=> {
-        console.log("uspješno upisan tag", newTags[newTags.length].text)//meni za testiranje
-      })
-      .catch((error) => {
+        .doc()
+        .set({
+          tagName: newTags[newTags.length-1].text,
+          //tagAssigned: this.card.id,
+        })
+        .then(() => {
+          console.log("uspješno upisan tag", newTags[newTags.length-1].text); //meni za testiranje
+        })
+        .then(()=> {
+          this.itemTags.push(newTags[newTags.length-1].text)
+          console.log("trenutni array za dodati itemu je ", this.itemTags)
+        })
+        .catch((error) => {
           console.error("Error writing document: ", error);
         });
     },
