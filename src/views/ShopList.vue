@@ -64,6 +64,7 @@
               :ime="items.ime"
               :opis="items.opis"
               :id="item.id"
+              :tags="item.itemTags"
             />
           </div>
         </div>
@@ -228,6 +229,7 @@ export default {
             } 
           }
         )
+        console.log("što je povučeno od itema: ", this.items)
       });
     db.collection('tag').onSnapshot(res => {
         const changesTag = res.docChanges();

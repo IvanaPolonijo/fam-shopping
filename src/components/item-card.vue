@@ -1,21 +1,18 @@
 <template>
   <div class="col-4">
     <div class="card">
+      <!-- Sadržaj kartice -->
       <div class="card-body">
         <h5 class="card-title">{{ card.ime }}</h5>
         <p class="card-text">{{ card.opis }}</p>
-        <vue-tags-input
-          v-model="tag"
-          :tags="tags"
-          :cardID="card.id"
-          @tags-changed="storeTagLocal"
-        />
+        <vue-tags-input :tags="card.itemTags" :cardID="card.id" />
         <b-button :id="card.id" v-on:click="saveBuy(card.id)"
           >Kupljeno</b-button
         >
         <b-button :id="card.id" @click="showModal">Uredi</b-button>
       </div>
-      <b-modal ref="my-modal" hide-footer title="Using Component Methods">
+      <!-- Modal za uređivanje kartice/artikla -->
+      <b-modal ref="my-modal" hide-footer title="Uredi sadržaj">
         <form>
           <div class="form-group">
             <input
@@ -37,7 +34,7 @@
           </div>
           <vue-tags-input
             v-model="tag"
-            :tags="tags"
+            :tags="card.itemTags"
             :cardID="card.id"
             @tags-changed="storeTagLocal"
           />
@@ -74,7 +71,7 @@ export default {
   data() {
     return {
       tag: "",
-      tags: [],
+      //tags: [],
       itemTags: [],
       ime: "",
       opis: "",
