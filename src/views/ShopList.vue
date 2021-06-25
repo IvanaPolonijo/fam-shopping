@@ -4,14 +4,12 @@
       <div class="col-1"></div>
       <div class="col-8">
         <template>
+          <!--Modal za dodavanje itema -->
           <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
-
           <b-modal id="modal">
             <template #modal-header="{}">
-              <!-- Emulate built in modal header close button action -->
               <h5>Unesite podatke!</h5>
             </template>
-
             <template #default="{}">
               <form>
                 <div class="form-group">
@@ -64,6 +62,7 @@
               :ime="items.ime"
               :opis="items.opis"
               :id="item.id"
+              :tags="item.itemTags"
             />
           </div>
         </div>
@@ -228,6 +227,7 @@ export default {
             } 
           }
         )
+        console.log("što je povučeno od itema: ", this.items)
       });
     db.collection('tag').onSnapshot(res => {
         const changesTag = res.docChanges();
