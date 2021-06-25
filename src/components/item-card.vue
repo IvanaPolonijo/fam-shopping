@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       tag: "",
-      //tags: [],
+      tags: [],
       itemTags: [],
       ime: "",
       opis: "",
