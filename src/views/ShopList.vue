@@ -4,7 +4,7 @@
       <div class="col-1"></div>
       <div class="col-8">
         <template>
-          <!--Modal za dodavanje itema -->
+          <!--Modal za dodavanje itema RADI -->
           <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
           <b-modal id="modal">
             <template #modal-header="{}">
@@ -56,11 +56,11 @@
         <div v-if="!checked">
           <div class="row">
             <item-card
-              v-for="item in showItems"
+              v-for="item in activeItems"
               :key="item.id"
               :card="item"
-              :ime="items.ime"
-              :opis="items.opis"
+              :ime="item.ime"
+              :opis="item.opis"
               :id="item.id"
               :tags="item.itemTags"
             />
@@ -104,7 +104,7 @@ import { db } from "@/firebase";
 import store from "@/store";
 
 export default {
-  name: "ShopList",
+    name: "ShopList",
   components: {
     ItemCard,
     VueTagsInput,
@@ -121,12 +121,10 @@ export default {
       id: "",
       status: "", //zapravo bool - kako deklarirati ovdje?
       items: [],
+      activeItems: [],
     };
   },
-/*   mounted() {
-    this.getCards();
-  }, */
-  computed: {
+/*   computed: {
     showItems() {
       //prikazati samo aktivne items
       let activeItems = [];
@@ -135,8 +133,16 @@ export default {
       }
       return activeItems;
     },
-  },
+  }, */
   methods: {
+    showItems() {
+      //prikazati samo aktivne items
+      for (let item of this.items) {
+        if (item.status) this.activeItems.push(item);
+      }
+      return this.activeItems,
+      console.log("aktivni items", this.activeItems);
+    },
     postNewItem() {
       if (this.ime === "") {
         this.$alert("Ime proizvoda mora biti navedeno!");
@@ -149,8 +155,8 @@ export default {
             itemTags: this.itemTags,
             //moram riješiti tagove posebno
           })
-          .then(() => {
-            console.log("Document written");
+          .then((docRef) => {
+            console.log("Document written", docRef.id);
           })
           .then(() => {
             this.$bvModal.hide("modal");
@@ -185,33 +191,9 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
-    /* getCards() {
-      console.log("Vučem artikle");
-      db.collection("items")
-        .get()
-        .then((query) => {
-          this.items = [];
-          query.forEach((doc) => {
-            const data = doc.data();
-            this.items.push({
-              ime: data.ime,
-              opis: data.opis,
-              status: data.status,
-              id: doc.id,
-            });
-          });
-        })
-        .then(() => {
-          console.log(this.items);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }, */
   },
-  created(){
+  mounted(){
       db.collection('items').onSnapshot(res => {
-
         const changes = res.docChanges();
         console.log("Vučem artikle u snapshot");
         changes.forEach(change => {
@@ -222,12 +204,13 @@ export default {
             })
           }
           if (change.type === "modified"){
-            change.doc.data();
-            console.log("promjena: ", change.doc.data());
+            change.doc.data(),
+            console.log("promjena artikla: ", change.doc.data());
             } 
           }
         )
-        console.log("što je povučeno od itema: ", this.items)
+        console.log("što je povučeno od itema: ", this.items),
+        this.showItems();
       });
     db.collection('tag').onSnapshot(res => {
         const changesTag = res.docChanges();

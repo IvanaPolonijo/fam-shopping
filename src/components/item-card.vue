@@ -112,7 +112,7 @@ export default {
           ime: this.card.ime,
           opis: this.card.opis,
           status: 0,
-          tags: this.itemTags,
+          itemTags: this.card.itemTags,
         })
         .then(() => {
           console.log("Document successfully written!");
