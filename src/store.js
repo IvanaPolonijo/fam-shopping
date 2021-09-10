@@ -1,5 +1,5 @@
 export default {
     userVerified: false,
-    allTags: [], //dražati snapshot svih tagova 
+    allTags: [], //držati snapshot svih tagova 
 }
 
