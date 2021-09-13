@@ -6,8 +6,11 @@
         <h5 class="card-title">{{ card.ime }}</h5>
         <p class="card-text">{{ card.opis }}</p>
         <vue-tags-input :tags="card.itemTags" :cardID="card.id" />
-        <b-button :id="card.id" v-on:click="saveBuy(card.id)"
+        <b-button v-if="card.status" :id="card.id" v-on:click="saveBuy(card.id)"
           >Kupljeno</b-button
+        >
+        <b-button v-if="!card.status" :id="card.id" v-on:click="saveChange(card.id)"
+          >Kupi</b-button
         >
         <b-button :id="card.id" @click="showModal">Uredi</b-button>
       </div>
@@ -94,7 +97,7 @@ export default {
           ime: this.card.ime,
           opis: this.card.opis,
           status: 1,
-          itemsTags: this.itemsTags,
+          itemTags: this.card.itemTags,
         })
         .then(() => {
           console.log(this.card);
@@ -106,7 +109,6 @@ export default {
         });
     },
     saveBuy(message) {
-      this.disabled=true;
       console.log(message);
       db.collection("items")
         .doc(message)

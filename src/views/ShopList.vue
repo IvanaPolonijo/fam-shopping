@@ -201,9 +201,9 @@ export default {
         }
         if (change.type === "modified") {
             change.doc.data();
-            const proba = change.doc.data().ime
+            const proba = change.doc.id
             console.log("promjena je ", proba)
-            const index = this.items.findIndex(item => item.ime === proba);
+            const index = this.items.findIndex(item => item.id === proba);
             this.items.splice(index, 1);
             this.items.push(change.doc.data())
           }
