@@ -61,6 +61,7 @@
 <script>
 import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
+//import store from "@/store";
 
 export default {
   name: "ItemCard",
