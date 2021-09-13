@@ -56,7 +56,7 @@
         <div v-if="!checked">
           <div class="row">
             <item-card
-              v-for="item in activeItems"
+              v-for="item in showItems"
               :key="item.id"
               :card="item"
               :ime="item.ime"
@@ -102,9 +102,10 @@ import ItemCard from "../components/item-card.vue";
 import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
 import store from "@/store";
+//import func from 'vue-editor-bridge';
 
 export default {
-    name: "ShopList",
+  name: "ShopList",
   components: {
     ItemCard,
     VueTagsInput,
@@ -121,10 +122,10 @@ export default {
       id: "",
       status: "", //zapravo bool - kako deklarirati ovdje?
       items: [],
-      activeItems: [],
+      change: 0,
     };
   },
-/*   computed: {
+   computed: {
     showItems() {
       //prikazati samo aktivne items
       let activeItems = [];
@@ -133,16 +134,8 @@ export default {
       }
       return activeItems;
     },
-  }, */
+  }, 
   methods: {
-    showItems() {
-      //prikazati samo aktivne items
-      for (let item of this.items) {
-        if (item.status) this.activeItems.push(item);
-      }
-      return this.activeItems,
-      console.log("aktivni items", this.activeItems);
-    },
     postNewItem() {
       if (this.ime === "") {
         this.$alert("Ime proizvoda mora biti navedeno!");
@@ -166,72 +159,86 @@ export default {
           });
       }
     },
-    storeTag(newTags){
+    storeTag(newTags) {
       console.log("duzina arraya tagova: ", newTags.length);
       console.log(
         "stanje tagova: ",
         newTags,
         " a dodan je tag: ",
-        newTags[newTags.length-1].text,
+        newTags[newTags.length - 1].text
       );
       db.collection("tag")
         .doc()
         .set({
-          tagName: newTags[newTags.length-1].text,
+          tagName: newTags[newTags.length - 1].text,
           //tagAssigned: this.card.id,
         })
         .then(() => {
-          console.log("uspješno upisan tag", newTags[newTags.length-1].text); //meni za testiranje
+          console.log("uspješno upisan tag", newTags[newTags.length - 1].text); //meni za testiranje
         })
-        .then(()=> {
-          this.itemTags.push(newTags[newTags.length-1].text)
-          console.log("trenutni array za dodati itemu je ", this.itemTags)
+        .then(() => {
+          this.itemTags.push(newTags[newTags.length - 1].text);
+          console.log("trenutni array za dodati itemu je ", this.itemTags);
         })
         .catch((error) => {
           console.error("Error writing document: ", error);
         });
     },
   },
-  mounted(){
-      db.collection('items').onSnapshot(res => {
-        const changes = res.docChanges();
-        console.log("Vučem artikle u snapshot");
-        changes.forEach(change => {
-          if (change.type === "added"){
-            this.items.push({
-              ...change.doc.data(),
-              id: change.doc.id
-            })
-          }
-          if (change.type === "modified"){
-            change.doc.data(),
-            console.log("promjena artikla: ", change.doc.data());
-            } 
-          }
-        )
-        console.log("što je povučeno od itema: ", this.items),
-        this.showItems();
+  mounted() {
+    db.collection("items").onSnapshot((res) => {
+      const changes = res.docChanges();
+      console.log("Vučem artikle u snapshot");
+      changes.forEach((change) => {
+        if (change.type === "added") {
+          this.items.push({
+            ...change.doc.data(),
+            id: change.doc.id,
+          });
+        }
+        if (change.type === "modified") {
+          change.doc.data();
+          this.$router.go(); //jako loše rješenje ali okay za sada
+        }
       });
-    db.collection('tag').onSnapshot(res => {
-        const changesTag = res.docChanges();
-        console.log("Vučem u snapshot tagova");
-        changesTag.forEach(change => {
-          if (change.type === "added"){
-            store.allTags.push({
-              ...change.doc.data()
-              
-            })
-          }
-          if (change.type === "modified"){
-            change.doc.data();
-            console.log("promjena: ", change.doc.data());
-            } 
-          }
-        )
-        let localTags = store.allTags
-        console.log("localni tagovi : ", localTags)//meni za testiranje 
-    })
-}
+      console.log("što je povučeno od itema: ", this.items);
+    });
+/*     db.collection("items").where("status", "==", 1)
+    .onSnapshot((querySnapshot) => {
+        this.activeItems = [];
+        querySnapshot.forEach((doc) => {
+            this.activeItems.push(doc.data());
+        });
+        console.log("lista promjena: ", this.activeItems);
+        console.log("maknuti item ID ", store.itemDelete)
+    });
+    db.collection("items").where("status", "==", 0)
+    .onSnapshot((querySnapshot) => {
+        this.items = [];
+        querySnapshot.forEach((doc) => {
+            this.items.push(doc.data());
+        });
+        console.log("lista promjena: ", this.items);
+        console.log("maknuti item ID ", store.itemDelete)
+    }); */
+    db.collection("tag").onSnapshot((res) => {
+      const changesTag = res.docChanges();
+      console.log("Vučem u snapshot tagova");
+      changesTag.forEach((change) => {
+        if (change.type === "added") {
+          store.allTags.push({
+            ...change.doc.data(),
+          });
+        }
+        if (change.type === "modified") {
+          change.doc.data();
+          console.log("promjena: ", change.doc.data());
+        }
+      });
+      let localTags = store.allTags;
+      console.log("localni tagovi : ", localTags); //meni za testiranje
+    });
+  },
 };
 </script>
 
