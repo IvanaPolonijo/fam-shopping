@@ -198,24 +198,27 @@ export default {
             ...change.doc.data(),
             id: change.doc.id,
           });
-          if (change.type === "modified") {
-            change.doc.data();
-            this.$router.go(); //jako loše rješenje ali okay za sada
-          }
         }
+        if (change.type === "modified") {
+            change.doc.data();
+            const proba = change.doc.data().ime
+            console.log("promjena je ", proba)
+            const index = this.items.findIndex(item => item.ime === proba);
+            this.items.splice(index, 1);
+            this.items.push(change.doc.data())
+          }
       });
       console.log("što je povučeno od itema: ", this.items);
     });
-    /*     db.collection("items").where("status", "==", 1)
+/*         db.collection("items").where("status", "===", 1)
     .onSnapshot((querySnapshot) => {
-        this.activeItems = [];
+        var activeItemsS = [];
         querySnapshot.forEach((doc) => {
-            this.activeItems.push(doc.data());
+            activeItemsS.push(doc.data());
         });
-        console.log("lista promjena: ", this.activeItems);
-        console.log("maknuti item ID ", store.itemDelete)
-    });
-    db.collection("items").where("status", "==", 0)
+        console.log("lista promjena: ", activeItemsS);
+    }); */
+    /* db.collection("items").where("status", "==", 0)
     .onSnapshot((querySnapshot) => {
         this.items = [];
         querySnapshot.forEach((doc) => {
