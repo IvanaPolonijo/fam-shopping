@@ -3,12 +3,19 @@
     <div class="row">
       <div class="col-12">
         <template>
+          <div>
+            <label for="tags-basic">Type a new tag and press enter</label>
+            <b-form-tags input-id="tags-basic" v-model="value"></b-form-tags>
+          </div>
           <!--Modal za dodavanje itema RADI -->
           <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
           <div class="search">
-          <b-form-input v-model="text" placeholder="Find by tag"></b-form-input>
-          <div class="mt-2">Value za provjeru: {{ text }}</div>
-        </div>
+            <b-form-input
+              v-model="text"
+              placeholder="Find by tag"
+            ></b-form-input>
+            <div class="mt-2">Value za provjeru: {{ text }}</div>
+          </div>
           <b-modal id="modal">
             <template #modal-header="{}">
               <h5>Unesite podatke!</h5>
@@ -34,11 +41,25 @@
                   />
                 </div>
                 <b-card-body>
-                  <vue-tags-input
-                    v-model="tag"
-                    :tags="tags"
-                    @tags-changed="storeTag"
-                  />
+                  <template>
+                    <div class="tag-input">
+                      <div
+                        v-for="(tag, index) in tags"
+                        :key="tag"
+                        class="tag-input__tag"
+                      >
+                        <span @click="removeTag(index)">x</span>
+                        {{ tag }}
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Enter a Tag"
+                        class="tag-input__text"
+                        @keydown.enter="addTag"
+                        @keydown.188="addTag"
+                      />
+                    </div>
+                  </template>
                 </b-card-body>
               </form>
             </template>
@@ -68,7 +89,6 @@
                     :ime="item.ime"
                     :opis="item.opis"
                     :id="item.id"
-                    :tags="item.itemTags"
                   />
                 </div>
               </b-tab>
@@ -95,7 +115,7 @@
 
 <script>
 import ItemCard from "../components/item-card.vue";
-import VueTagsInput from "@johmun/vue-tags-input";
+//import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
 import store from "@/store";
 //import func from 'vue-editor-bridge';
@@ -104,7 +124,7 @@ export default {
   name: "ShopList",
   components: {
     ItemCard,
-    VueTagsInput,
+    //VueTagsInput,
   },
   data() {
     return {
@@ -116,9 +136,9 @@ export default {
       ime: "",
       opis: "",
       id: "",
-      status: "",
+      //status: "",
       items: [],
-      change: 0,
+      //change: 0,
     };
   },
   computed: {
@@ -162,30 +182,16 @@ export default {
           });
       }
     },
-    storeTag(newTags) {
-      console.log("duzina arraya tagova: ", newTags.length);
-      console.log(
-        "stanje tagova: ",
-        newTags,
-        " a dodan je tag: ",
-        newTags[newTags.length - 1].text
-      );
-      db.collection("tag")
-        .doc()
-        .set({
-          tagName: newTags[newTags.length - 1].text,
-          //tagAssigned: this.card.id,
-        })
-        .then(() => {
-          console.log("uspješno upisan tag", newTags[newTags.length - 1].text); //meni za testiranje
-        })
-        .then(() => {
-          this.itemTags.push(newTags[newTags.length - 1].text);
-          console.log("trenutni array za dodati itemu je ", this.itemTags);
-        })
-        .catch((error) => {
-          console.error("Error writing document: ", error);
-        });
+        addTag(event) {
+      event.preventDefault();
+      var val = event.target.value.trim();
+      if (val.length > 0) {
+        this.tags.push(val);
+        event.target.value = "";
+      }
+    },
+    removeTag(index) {
+      this.card.tags.splice(index, 1);
     },
   },
   mounted() {
@@ -200,17 +206,17 @@ export default {
           });
         }
         if (change.type === "modified") {
-            change.doc.data();
-            const proba = change.doc.data().ime
-            console.log("promjena je ", proba)
-            const index = this.items.findIndex(item => item.ime === proba);
-            this.items.splice(index, 1);
-            this.items.push(change.doc.data())
-          }
+          change.doc.data();
+          const proba = change.doc.data().ime;
+          console.log("promjena je ", proba);
+          const index = this.items.findIndex((item) => item.ime === proba);
+          this.items.splice(index, 1);
+          this.items.push(change.doc.data());
+        }
       });
       console.log("što je povučeno od itema: ", this.items);
     });
-/*         db.collection("items").where("status", "===", 1)
+    /*         db.collection("items").where("status", "===", 1)
     .onSnapshot((querySnapshot) => {
         var activeItemsS = [];
         querySnapshot.forEach((doc) => {
@@ -251,5 +257,37 @@ export default {
 <style scoped>
 .search {
   padding-top: 15px;
+}
+.tag-input {
+  width: 100%;
+  border: 1px solid #eee;
+  font-size: 0.9em;
+  height: 50px;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.tag-input__tag {
+  height: 30px;
+  float: left;
+  margin-right: 10px;
+  background-color: #eee;
+  margin-top: 10px;
+  line-height: 30px;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.tag-input__tag > span {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.tag-input__text {
+  border: none;
+  outline: none;
+  font-size: 0.9em;
+  line-height: 50px;
+  background: none;
 }
 </style>]

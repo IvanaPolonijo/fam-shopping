@@ -5,7 +5,18 @@
       <div class="card-body">
         <h5 class="card-title">{{ card.ime }}</h5>
         <p class="card-text">{{ card.opis }}</p>
-        <vue-tags-input :tags="card.itemTags" :cardID="card.id" />
+        <template>
+          <div class="tag-input__disabled">
+            <div
+              v-for="(tag) in card.itemTags"
+              :key="tag"
+              class="tag-input__tag"
+            >
+              {{ tag }}
+            </div>
+          </div>
+        </template>
+
         <b-button :id="card.id" v-on:click="saveBuy(card.id)"
           >Kupljeno</b-button
         >
@@ -32,12 +43,25 @@
               placeholder="Nesto važno u vezi proizvoda?"
             />
           </div>
-          <vue-tags-input
-            v-model="tag"
-            :tags="card.itemTags"
-            :cardID="card.id"
-            @tags-changed="storeTagLocal"
-          />
+          <template>
+            <div class="tag-input">
+              <div
+                v-for="(tag, index) in card.itemTags"
+                :key="tag"
+                class="tag-input__tag"
+              >
+                <span @click="removeTag(index)">x</span>
+                {{ tag }} {{index}}
+              </div>
+              <input
+                type="text"
+                placeholder="Enter a Tag"
+                class="tag-input__text"
+                @keydown.enter="addTag"
+                @keydown.188="addTag"
+              />
+            </div>
+          </template>
         </form>
         <b-button
           class="mt-3"
@@ -59,15 +83,15 @@
 </template>
 
 <script>
-import VueTagsInput from "@johmun/vue-tags-input";
+//import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
-//import store from "@/store";
 
 export default {
   name: "ItemCard",
   props: ["card"],
   components: {
-    VueTagsInput,
+    //VueTagsInput,
+    //TagInput,
   },
   data() {
     return {
@@ -85,6 +109,18 @@ export default {
     },
     hideModal() {
       this.$refs["my-modal"].hide();
+    },
+    addTag(event) {
+      event.preventDefault();
+      var val = event.target.value.trim();
+      if (val.length > 0) {
+        this.card.itemTags.push(val);
+        event.target.value = "";
+      }
+    },
+    removeTag(index) {
+      console.log("tagovi tog artikla", this.card.itemsTags)
+      this.card.itemsTags.splice(index, 1);
     },
     saveChange(message) {
       console.log(message);
@@ -106,7 +142,7 @@ export default {
         });
     },
     saveBuy(message) {
-      this.disabled=true;
+      this.disabled = true;
       console.log(message);
       db.collection("items")
         .doc(message)
@@ -156,5 +192,45 @@ export default {
   padding: 15px 0;
   text-align: left;
   margin-block: 3;
+}
+.tag-input {
+  width: 100%;
+  border: 1px solid #eee;
+  font-size: 0.9em;
+  height: 50px;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.tag-input__disabled {
+  width: 100%;
+  font-size: 0.9em;
+  height: 50px;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.tag-input__tag {
+  height: 30px;
+  float: left;
+  margin-right: 10px;
+  background-color: #eee;
+  margin-top: 10px;
+  line-height: 30px;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.tag-input__tag > span {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.tag-input__text {
+  border: none;
+  outline: none;
+  font-size: 0.9em;
+  line-height: 50px;
+  background: none;
 }
 </style>
