@@ -106,6 +106,7 @@ export default {
         });
     },
     saveBuy(message) {
+      this.disabled=true;
       console.log(message);
       db.collection("items")
         .doc(message)

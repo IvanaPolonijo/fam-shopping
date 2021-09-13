@@ -1,11 +1,14 @@
-<template>
+[<template>
   <div class="container">
     <div class="row">
-      <div class="col-1"></div>
-      <div class="col-8">
+      <div class="col-12">
         <template>
           <!--Modal za dodavanje itema RADI -->
           <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
+          <div class="search">
+          <b-form-input v-model="text" placeholder="Find by tag"></b-form-input>
+          <div class="mt-2">Value za provjeru: {{ text }}</div>
+        </div>
           <b-modal id="modal">
             <template #modal-header="{}">
               <h5>Unesite podatke!</h5>
@@ -53,46 +56,39 @@
         </template>
 
         <!-- ovisno o stanju toggle checkera pokazujem sve ili samo aktive -->
-        <div v-if="!checked">
-          <div class="row">
-            <item-card
-              v-for="item in showItems"
-              :key="item.id"
-              :card="item"
-              :ime="item.ime"
-              :opis="item.opis"
-              :id="item.id"
-              :tags="item.itemTags"
-            />
-          </div>
-        </div>
-        <div v-else>
-          <div class="row">
-            <item-card
-              v-for="item in items"
-              :key="item.id"
-              :card="item"
-              :ime="items.ime"
-              :opis="items.opis"
-              :id="item.id"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="col-3">
-        <div class="search">
-          <b-form-input v-model="text" placeholder="Find by tag"></b-form-input>
-          <div class="mt-2">Value za provjeru: {{ text }}</div>
-        </div>
         <div>
-          <div class="form-check form-switch">
-            <b-form-checkbox v-model="checked" name="check-button" switch>
-              Zašto ne izgleda kao Switch Checkbox???
-              <b>(Checked: {{ checked }})</b>
-            </b-form-checkbox>
-          </div>
+          <b-card no-body>
+            <b-tabs card>
+              <b-tab title="Za kupiti" active>
+                <div class="row">
+                  <item-card
+                    v-for="item in showItems"
+                    :key="item.id"
+                    :card="item"
+                    :ime="item.ime"
+                    :opis="item.opis"
+                    :id="item.id"
+                    :tags="item.itemTags"
+                  />
+                </div>
+              </b-tab>
+              <b-tab title="Kupljeno">
+                <div class="row">
+                  <item-card
+                    v-for="item in boughtItems"
+                    :key="item.id"
+                    :card="item"
+                    :ime="items.ime"
+                    :opis="items.opis"
+                    :id="item.id"
+                  />
+                </div>
+              </b-tab>
+            </b-tabs>
+          </b-card>
         </div>
       </div>
+      <div></div>
     </div>
   </div>
 </template>
@@ -120,12 +116,12 @@ export default {
       ime: "",
       opis: "",
       id: "",
-      status: "", //zapravo bool - kako deklarirati ovdje?
+      status: "",
       items: [],
       change: 0,
     };
   },
-   computed: {
+  computed: {
     showItems() {
       //prikazati samo aktivne items
       let activeItems = [];
@@ -134,7 +130,14 @@ export default {
       }
       return activeItems;
     },
-  }, 
+    boughtItems() {
+      let bItems = [];
+      for (let item of this.items) {
+        if (!item.status) bItems.push(item);
+      }
+      return bItems;
+    },
+  },
   methods: {
     postNewItem() {
       if (this.ime === "") {
@@ -195,15 +198,15 @@ export default {
             ...change.doc.data(),
             id: change.doc.id,
           });
-        }
-        if (change.type === "modified") {
-          change.doc.data();
-          this.$router.go(); //jako loše rješenje ali okay za sada
+          if (change.type === "modified") {
+            change.doc.data();
+            this.$router.go(); //jako loše rješenje ali okay za sada
+          }
         }
       });
       console.log("što je povučeno od itema: ", this.items);
     });
-/*     db.collection("items").where("status", "==", 1)
+    /*     db.collection("items").where("status", "==", 1)
     .onSnapshot((querySnapshot) => {
         this.activeItems = [];
         querySnapshot.forEach((doc) => {
@@ -246,4 +249,4 @@ export default {
 .search {
   padding-top: 15px;
 }
-</style>
+</style>]
