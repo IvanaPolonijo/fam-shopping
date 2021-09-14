@@ -25,6 +25,11 @@ Vue.use(IconsPlugin)
 import { FormTagsPlugin } from 'bootstrap-vue'
 Vue.use(FormTagsPlugin)
 
+//for different tags
+import VueCompositionAPI from '@vue/composition-api'
+Vue.use(VueCompositionAPI)
+
+
 Vue.config.productionTip = false
 
 Vue.use(VueParticles)
