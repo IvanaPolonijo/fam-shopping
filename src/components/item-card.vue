@@ -126,8 +126,10 @@ export default {
       }
     },
     removeTag(index) {
-      console.log("tagovi tog artikla", this.card.itemsTags)
-      this.card.itemsTags.splice(index, 1);
+      const tagovi = this.card.itemTags
+      console.log("tagovi tog artikla", tagovi)
+      console.log("index koji se mora maknuti", index)
+      tagovi.splice(index, 1);
     },
     saveChange(message) {
       console.log(message);
@@ -149,8 +151,6 @@ export default {
         });
     },
     saveBuy(message) {
-
-      this.disabled = true;
       console.log(message);
       db.collection("items")
         .doc(message)

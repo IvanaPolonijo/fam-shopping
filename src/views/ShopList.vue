@@ -3,10 +3,6 @@
     <div class="row">
       <div class="col-12">
         <template>
-          <div>
-            <label for="tags-basic">Type a new tag and press enter</label>
-            <b-form-tags input-id="tags-basic" v-model="value"></b-form-tags>
-          </div>
           <!--Modal za dodavanje itema RADI -->
           <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
           <div class="search">
@@ -117,6 +113,7 @@
 import ItemCard from "../components/item-card.vue";
 //import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
+import firebase from "firebase";
 import store from "@/store";
 //import func from 'vue-editor-bridge';
 
@@ -168,11 +165,12 @@ export default {
             ime: this.ime,
             opis: this.opis,
             status: 1,
-            itemTags: this.itemTags,
+            itemTags: this.tags,
             //moram riješiti tagove posebno
           })
           .then((docRef) => {
             console.log("Document written", docRef.id);
+            this.storeTag(docRef.id);
           })
           .then(() => {
             this.$bvModal.hide("modal");
@@ -182,7 +180,39 @@ export default {
           });
       }
     },
-        addTag(event) {
+    storeTag(itemID) {
+      const newTags = this.tags;
+      console.log("novi tagovi su", newTags);
+      console.log("za item s IDem", itemID);
+      newTags.forEach((el) => {
+        if (store.allTags.find((o) => o.tagName === el)) {
+          let index = store.allTags.findIndex((o) => o.tagName === el);
+          db.collection("tag")
+            .doc(store.allTags[index].id)
+            .update({
+              itemID: firebase.firestore.FieldValue.arrayUnion(itemID),
+            })
+            .catch((error) => {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+            });
+        } else {
+          db.collection("tag")
+            .add({
+              tagName: el,
+              itemID: itemID,
+            })
+            .catch((error) => {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+            });
+        }
+      });
+
+      //OVDJE SE NASTAVI! CILJ JE DA PRIJE SPREMANJA PRETRAŽI LOKALNE TAGOVE
+      //PA OVISNO O TOME SPREMI NOVO ILI PRILAGODI
+    },
+    addTag(event) {
       event.preventDefault();
       var val = event.target.value.trim();
       if (val.length > 0) {
@@ -191,7 +221,7 @@ export default {
       }
     },
     removeTag(index) {
-      this.card.tags.splice(index, 1);
+      this.tags.splice(index, 1);
     },
   },
   mounted() {
@@ -206,35 +236,17 @@ export default {
           });
         }
         if (change.type === "modified") {
-
-            change.doc.data();
-            const proba = change.doc.id
-            console.log("promjena je ", proba)
-            const index = this.items.findIndex(item => item.id === proba);
-            this.items.splice(index, 1);
-            this.items.push(change.doc.data())
-          }
-
+          change.doc.data();
+          const proba = change.doc.id;
+          console.log("promjena je ", proba);
+          const index = this.items.findIndex((item) => item.id === proba);
+          this.items.splice(index, 1);
+          this.items.push(change.doc.data());
+        }
       });
       console.log("što je povučeno od itema: ", this.items);
     });
-    /*         db.collection("items").where("status", "===", 1)
-    .onSnapshot((querySnapshot) => {
-        var activeItemsS = [];
-        querySnapshot.forEach((doc) => {
-            activeItemsS.push(doc.data());
-        });
-        console.log("lista promjena: ", activeItemsS);
-    }); */
-    /* db.collection("items").where("status", "==", 0)
-    .onSnapshot((querySnapshot) => {
-        this.items = [];
-        querySnapshot.forEach((doc) => {
-            this.items.push(doc.data());
-        });
-        console.log("lista promjena: ", this.items);
-        console.log("maknuti item ID ", store.itemDelete)
-    }); */
+
     db.collection("tag").onSnapshot((res) => {
       const changesTag = res.docChanges();
       console.log("Vučem u snapshot tagova");
@@ -242,6 +254,7 @@ export default {
         if (change.type === "added") {
           store.allTags.push({
             ...change.doc.data(),
+            id: change.doc.id,
           });
         }
         if (change.type === "modified") {
