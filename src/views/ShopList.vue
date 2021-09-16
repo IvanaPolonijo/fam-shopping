@@ -4,8 +4,8 @@
       <div class="col-12">
         <template>
           <!--Modal za dodavanje itema RADI -->
-          <div class="p-2"> 
-          <b-button  @click="$bvModal.show('modal')">Dodaj na listu</b-button>
+          <div class="p-2">
+            <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
           </div>
           <b-modal id="modal">
             <template #modal-header="{}">
@@ -59,12 +59,14 @@
               <!-- Emulate built in modal footer ok and cancel button actions -->
               <b-row>
                 <div class="col">
-                <b-button variant="success" @click="postNewItem">
-                  SAVE
-                </b-button>
+                  <b-button variant="success" @click="postNewItem">
+                    SAVE
+                  </b-button>
                 </div>
                 <div class="col">
-                <b-button variant="danger" @click="cancel()"> Cancel </b-button>
+                  <b-button variant="danger" @click="cancel()">
+                    Cancel
+                  </b-button>
                 </div>
               </b-row>
             </template>
@@ -76,6 +78,14 @@
           <b-card no-body>
             <b-tabs card>
               <b-tab title="Za kupiti" active>
+                <div class="p-2">
+                  <b-button
+                    @click="printPDF"
+                    type="button"
+                    class="btn btn-warning"
+                    >Ispiši PDF</b-button
+                  >
+                </div>
                 <div class="row">
                   <item-card
                     v-for="item in showItems"
@@ -100,14 +110,23 @@
                 </div>
               </b-tab>
               <b-tab title="Pretraži">
-                
                 <div class="row p-2">
                   <b-col sm="3">
-                  <b-form-input
-                    id="textT"
-                    v-model="textTag"
-                    placeholder="Find by tag"
-                  ></b-form-input>
+                    <b-form-input
+                      id="textT"
+                      v-model="textTag"
+                      placeholder="Find by tag"
+                    ></b-form-input>
+                  </b-col>
+                  <b-col sm="3">
+                    <div>
+                      <b-button
+                        @click="printPDFsearch"
+                        type="button"
+                        class="btn btn-warning"
+                        >Ispiši PDF</b-button
+                      >
+                    </div>
                   </b-col>
                 </div>
                 <div class="row">
@@ -136,7 +155,8 @@ import ItemCard from "../components/item-card.vue";
 import { db } from "@/firebase";
 import firebase from "firebase";
 import store from "@/store";
-//import func from 'vue-editor-bridge';
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 export default {
   name: "ShopList",
@@ -173,15 +193,15 @@ export default {
       }
       return bItems;
     },
-    searchItems(){
+    searchItems() {
       //items traženi po tagu
       let itemsFound = [];
-      for (let item of this.items){
-        if (item.itemTags.find(el => el == this.textTag))
-        itemsFound.push(item)
+      for (let item of this.items) {
+        if (item.itemTags.find((el) => el == this.textTag))
+          itemsFound.push(item);
       }
       return itemsFound;
-    }
+    },
   },
   methods: {
     postNewItem() {
@@ -211,6 +231,28 @@ export default {
             console.error("Error adding document: ", error);
           });
       }
+    },
+    printPDF() {
+      const doc = new jsPDF();
+      var row = [];
+      var col = ["ime", "opis", "status", "tagovi"];
+      this.showItems.forEach((el) => {
+        var temp = [el.ime, el.opis, el.status, el.itemTags];
+        row.push(temp);
+      });
+      doc.autoTable(col, row, { startY: 10 });
+      doc.save("popis.pdf");
+    },
+    printPDFsearch() {
+      const doc = new jsPDF();
+      var row = [];
+      var col = ["ime", "opis", "status", "tagovi"];
+      this.searchItems.forEach((el) => {
+        var temp = [el.ime, el.opis, el.status, el.itemTags];
+        row.push(temp);
+      });
+      doc.autoTable(col, row, { startY: 10 });
+      doc.save("popis.pdf");
     },
     storeTag(itemID) {
       const newTags = this.tags;
