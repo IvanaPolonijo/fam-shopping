@@ -167,6 +167,7 @@ export default {
             opis: this.opis,
             status: 1,
             itemTags: this.tags,
+
           })
           .then((docRef) => {
             console.log("Document written", docRef.id);

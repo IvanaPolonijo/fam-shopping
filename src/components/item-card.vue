@@ -87,7 +87,8 @@
 <script>
 //import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
-
+import firebase from "firebase";
+import store from "@/store";
 
 export default {
   name: "ItemCard",
@@ -135,7 +136,7 @@ export default {
         .then((doc) => {
           if (doc.exists) {
             this.oldItemTags = doc.data().itemTags;
-            console.log("stari tagovi su", this.oldItemTags)//koristim da vidim koje tagove treba updejtat
+            console.log("stari tagovi su", this.oldItemTags); //koristim da vidim koje tagove treba updejtat
           } else console.log("dodati neku funkciju za taj slučaj");
         })
         .then(() => {
@@ -166,8 +167,59 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
-    saveTagsChange(message){
-      console.log("dodati spremanje u firestore vodeći računa o artiklu", message)
+    saveTagsChange(message) {
+      console.log("stari array je ", this.oldItemTags);
+      console.log("novi array je ", this.card.itemTags);
+      this.oldItemTags
+        .forEach((el) => {
+          db.collection("tag")
+            .where("tagName", "==", el)
+            .get()
+            .then((querySnapshot) =>
+              querySnapshot.forEach((doc) => {
+                db.collection("tag")
+                  .doc(doc.id)
+                  .update({
+                    itemID: firebase.firestore.FieldValue.arrayRemove(message),
+                  })
+                  .catch((error) => {
+                    // The document probably doesn't exist.
+                    console.error("Error updating document: ", error);
+                  });
+              })
+            );
+        })
+        
+    },
+    storeTag(itemID) {
+      const newTags = this.card.itemTags;
+      console.log("novi tagovi su", newTags);
+      console.log("za item s IDem", itemID);
+      newTags.forEach((el) => {
+        if (store.allTags.find((o) => o.tagName === el)) {
+          console.log("nađen je ", el)
+          let index = store.allTags.findIndex((o) => o.tagName === el);
+          db.collection("tag")
+            .doc(store.allTags[index].id)
+            .update({
+              itemID: firebase.firestore.FieldValue.arrayUnion(itemID),
+            })
+            .catch((error) => {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+            });
+        } else {
+          db.collection("tag")
+            .add({
+              tagName: el,
+              itemID: itemID,
+            })
+            .catch((error) => {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+            });
+        }
+      });
     },
     saveBuy(message) {
       console.log(message);
