@@ -143,7 +143,7 @@ export default {
           this.saveItemChange(message);
         })
         .then(() => {
-          this.saveTagsChange(message);
+          this.storeTag(message);
         })
         .catch((error) => {
           console.error("Error writing document: ", error);
@@ -168,10 +168,8 @@ export default {
         });
     },
     saveTagsChange(message) {
-      console.log("stari array je ", this.oldItemTags);
-      console.log("novi array je ", this.card.itemTags);
-      this.oldItemTags
-        .forEach((el) => {
+      return new Promise((resolve) => {
+        this.oldItemTags.forEach((el) => {
           db.collection("tag")
             .where("tagName", "==", el)
             .get()
@@ -187,17 +185,24 @@ export default {
                     console.error("Error updating document: ", error);
                   });
               })
-            );
-        })
-        
+            )
+            .then(() => {
+              resolve("resolved");
+            })
+            .catch(() => {
+              resolve("rejected");
+            });
+        });
+      });
     },
-    storeTag(itemID) {
+    async storeTag(itemID) {
+      await this.saveTagsChange(itemID);
       const newTags = this.card.itemTags;
       console.log("novi tagovi su", newTags);
       console.log("za item s IDem", itemID);
       newTags.forEach((el) => {
         if (store.allTags.find((o) => o.tagName === el)) {
-          console.log("nađen je ", el)
+          console.log("nađen je ", el);
           let index = store.allTags.findIndex((o) => o.tagName === el);
           db.collection("tag")
             .doc(store.allTags[index].id)
