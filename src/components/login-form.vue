@@ -37,16 +37,7 @@
             <b-button @click="enter()">Login</b-button>
           </div>
           <hr class="solid" />
-          <p>...uvijek možete putem vašeg Google računa...</p>
-          <div>
-            <!-- <b-button @click="enter">Login</b-button> -->
-            <button
-              @click="enterWithGoogle"
-              class="google-signin-button"
-            >
-              Continue with Google
-            </button>
-          </div>
+
         </b-form>
       </content>
     </b-card>

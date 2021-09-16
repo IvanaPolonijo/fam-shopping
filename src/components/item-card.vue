@@ -12,17 +12,32 @@
             </div>
           </div>
         </template>
-
-        <b-button v-if="card.status" :id="card.id" v-on:click="saveBuy(card.id)"
+      <div class="row gx-3">
+        <div class="col-3">
+        <b-button
+          class="btn btn-success btn-sm"
+          v-if="card.status"
+          :id="card.id"
+          v-on:click="saveBuy(card.id)"
           >Kupljeno</b-button
         >
         <b-button
+          class="btn btn-danger btn-sm"
           v-if="!card.status"
           :id="card.id"
           v-on:click="saveChange(card.id)"
-          >Kupi</b-button
+          >Ipak treba</b-button
         >
-        <b-button :id="card.id" @click="showModal">Uredi</b-button>
+        </div>
+        <div class="col-3">
+        <b-button 
+        class="btn btn-sm margin-left:2.5em"
+        :id="card.id" 
+        @click="showModal"
+        >Uredi</b-button
+        >
+        </div>
+      </div>
       </div>
       <!-- Modal za uređivanje kartice/artikla -->
       <b-modal ref="my-modal" hide-footer title="Uredi sadržaj">
@@ -243,30 +258,6 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
-    /* storeTagLocal(newTags) {
-      console.log("duzina arraya tagova: ", newTags.length);
-      console.log(
-        "stanje tagova: ",
-        newTags,
-        " a dodan je tag: ",
-        newTags[newTags.length - 1].text,
-        " a za card ID ",
-        this.card.id
-      );
-      db.collection("tag")
-        .doc()
-        .set({
-          tagName: newTags[newTags.length - 1].text,
-          tagAssigned: this.card.id,
-        })
-        .then(() => {
-          this.itemTags.push(newTags[newTags.length - 1].text);
-          console.log("trenutni array za dodati itemu je ", this.itemTags);
-        })
-        .catch((error) => {
-          console.error("Error writing document: ", error);
-        });
-    }, */
   },
 };
 </script>
