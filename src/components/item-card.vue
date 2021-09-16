@@ -7,24 +7,19 @@
         <p class="card-text">{{ card.opis }}</p>
         <template>
           <div class="tag-input__disabled">
-            <div
-              v-for="(tag) in card.itemTags"
-              :key="tag"
-              class="tag-input__tag"
-            >
+            <div v-for="tag in card.itemTags" :key="tag" class="tag-input__tag">
               {{ tag }}
             </div>
           </div>
         </template>
 
- 
-
- 
         <b-button v-if="card.status" :id="card.id" v-on:click="saveBuy(card.id)"
-
           >Kupljeno</b-button
         >
-        <b-button v-if="!card.status" :id="card.id" v-on:click="saveChange(card.id)"
+        <b-button
+          v-if="!card.status"
+          :id="card.id"
+          v-on:click="saveChange(card.id)"
           >Kupi</b-button
         >
         <b-button :id="card.id" @click="showModal">Uredi</b-button>
@@ -58,7 +53,7 @@
                 class="tag-input__tag"
               >
                 <span @click="removeTag(index)">x</span>
-                {{ tag }} {{index}}
+                {{ tag }} {{ index }}
               </div>
               <input
                 type="text"
@@ -92,6 +87,8 @@
 <script>
 //import VueTagsInput from "@johmun/vue-tags-input";
 import { db } from "@/firebase";
+import firebase from "firebase";
+import store from "@/store";
 
 export default {
   name: "ItemCard",
@@ -105,6 +102,7 @@ export default {
       tag: "",
       tags: [],
       itemTags: [],
+      oldItemTags: [],
       ime: "",
       opis: "",
       id: "",
@@ -126,13 +124,32 @@ export default {
       }
     },
     removeTag(index) {
-      const tagovi = this.card.itemTags
-      console.log("tagovi tog artikla", tagovi)
-      console.log("index koji se mora maknuti", index)
+      const tagovi = this.card.itemTags;
+      console.log("tagovi tog artikla", tagovi);
+      console.log("index koji se mora maknuti", index);
       tagovi.splice(index, 1);
     },
     saveChange(message) {
-      console.log(message);
+      db.collection("items")
+        .doc(message)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            this.oldItemTags = doc.data().itemTags;
+            console.log("stari tagovi su", this.oldItemTags); //koristim da vidim koje tagove treba updejtat
+          } else console.log("dodati neku funkciju za taj slučaj");
+        })
+        .then(() => {
+          this.saveItemChange(message);
+        })
+        .then(() => {
+          this.storeTag(message);
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    },
+    saveItemChange(message) {
       db.collection("items")
         .doc(message)
         .set({
@@ -149,6 +166,65 @@ export default {
         .catch((error) => {
           console.error("Error writing document: ", error);
         });
+    },
+    saveTagsChange(message) {
+      return new Promise((resolve) => {
+        this.oldItemTags.forEach((el) => {
+          db.collection("tag")
+            .where("tagName", "==", el)
+            .get()
+            .then((querySnapshot) =>
+              querySnapshot.forEach((doc) => {
+                db.collection("tag")
+                  .doc(doc.id)
+                  .update({
+                    itemID: firebase.firestore.FieldValue.arrayRemove(message),
+                  })
+                  .catch((error) => {
+                    // The document probably doesn't exist.
+                    console.error("Error updating document: ", error);
+                  });
+              })
+            )
+            .then(() => {
+              resolve("resolved");
+            })
+            .catch(() => {
+              resolve("rejected");
+            });
+        });
+      });
+    },
+    async storeTag(itemID) {
+      await this.saveTagsChange(itemID);
+      const newTags = this.card.itemTags;
+      console.log("novi tagovi su", newTags);
+      console.log("za item s IDem", itemID);
+      newTags.forEach((el) => {
+        if (store.allTags.find((o) => o.tagName === el)) {
+          console.log("nađen je ", el);
+          let index = store.allTags.findIndex((o) => o.tagName === el);
+          db.collection("tag")
+            .doc(store.allTags[index].id)
+            .update({
+              itemID: firebase.firestore.FieldValue.arrayUnion(itemID),
+            })
+            .catch((error) => {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+            });
+        } else {
+          db.collection("tag")
+            .add({
+              tagName: el,
+              itemID: itemID,
+            })
+            .catch((error) => {
+              // The document probably doesn't exist.
+              console.error("Error updating document: ", error);
+            });
+        }
+      });
     },
     saveBuy(message) {
       console.log(message);
@@ -167,7 +243,7 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
-    storeTagLocal(newTags) {
+    /* storeTagLocal(newTags) {
       console.log("duzina arraya tagova: ", newTags.length);
       console.log(
         "stanje tagova: ",
@@ -190,7 +266,7 @@ export default {
         .catch((error) => {
           console.error("Error writing document: ", error);
         });
-    },
+    }, */
   },
 };
 </script>

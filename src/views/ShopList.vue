@@ -148,6 +148,7 @@ export default {
       return activeItems;
     },
     boughtItems() {
+      //prikazati samo neaktivne items
       let bItems = [];
       for (let item of this.items) {
         if (!item.status) bItems.push(item);
@@ -166,7 +167,7 @@ export default {
             opis: this.opis,
             status: 1,
             itemTags: this.tags,
-            //moram riješiti tagove posebno
+
           })
           .then((docRef) => {
             console.log("Document written", docRef.id);
@@ -208,9 +209,6 @@ export default {
             });
         }
       });
-
-      //OVDJE SE NASTAVI! CILJ JE DA PRIJE SPREMANJA PRETRAŽI LOKALNE TAGOVE
-      //PA OVISNO O TOME SPREMI NOVO ILI PRILAGODI
     },
     addTag(event) {
       event.preventDefault();
