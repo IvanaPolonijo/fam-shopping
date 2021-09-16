@@ -4,13 +4,8 @@
       <div class="col-12">
         <template>
           <!--Modal za dodavanje itema RADI -->
-          <b-button @click="$bvModal.show('modal')">Dodaj na listu</b-button>
-          <div class="search">
-            <b-form-input
-              v-model="text"
-              placeholder="Find by tag"
-            ></b-form-input>
-            <div class="mt-2">Value za provjeru: {{ text }}</div>
+          <div class="p-2"> 
+          <b-button  @click="$bvModal.show('modal')">Dodaj na listu</b-button>
           </div>
           <b-modal id="modal">
             <template #modal-header="{}">
@@ -18,7 +13,7 @@
             </template>
             <template #default="{}">
               <form>
-                <div class="form-group">
+                <div class="form-group p-2">
                   <input
                     v-model="ime"
                     type="ime"
@@ -27,7 +22,7 @@
                     placeholder="Naziv proizvoda"
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group p-2">
                   <input
                     v-model="opis"
                     type="opis"
@@ -63,16 +58,20 @@
             <template #modal-footer="{ cancel }">
               <!-- Emulate built in modal footer ok and cancel button actions -->
               <b-row>
-                <b-button class="mr-1" variant="success" @click="postNewItem">
+                <div class="col">
+                <b-button variant="success" @click="postNewItem">
                   SAVE
                 </b-button>
+                </div>
+                <div class="col">
                 <b-button variant="danger" @click="cancel()"> Cancel </b-button>
+                </div>
               </b-row>
             </template>
           </b-modal>
         </template>
 
-        <!-- ovisno o stanju toggle checkera pokazujem sve ili samo aktive -->
+        <!-- ovisno o stanju pokazujem one koje treba kupiti ili koji su već kupljeni -->
         <div>
           <b-card no-body>
             <b-tabs card>
@@ -92,6 +91,28 @@
                 <div class="row">
                   <item-card
                     v-for="item in boughtItems"
+                    :key="item.id"
+                    :card="item"
+                    :ime="items.ime"
+                    :opis="items.opis"
+                    :id="item.id"
+                  />
+                </div>
+              </b-tab>
+              <b-tab title="Pretraži">
+                
+                <div class="row p-2">
+                  <b-col sm="3">
+                  <b-form-input
+                    id="textT"
+                    v-model="textTag"
+                    placeholder="Find by tag"
+                  ></b-form-input>
+                  </b-col>
+                </div>
+                <div class="row">
+                  <item-card
+                    v-for="item in searchItems"
                     :key="item.id"
                     :card="item"
                     :ime="items.ime"
@@ -125,17 +146,14 @@ export default {
   },
   data() {
     return {
-      text: "", //za search
-      checked: false, //za checkbox toggle
+      textTag: "", //za search
       tag: "",
       tags: [],
       itemTags: [],
       ime: "",
       opis: "",
       id: "",
-      //status: "",
       items: [],
-      //change: 0,
     };
   },
   computed: {
@@ -155,6 +173,15 @@ export default {
       }
       return bItems;
     },
+    searchItems(){
+      //items traženi po tagu
+      let itemsFound = [];
+      for (let item of this.items){
+        if (item.itemTags.find(el => el == this.textTag))
+        itemsFound.push(item)
+      }
+      return itemsFound;
+    }
   },
   methods: {
     postNewItem() {
@@ -167,11 +194,15 @@ export default {
             opis: this.opis,
             status: 1,
             itemTags: this.tags,
-
           })
           .then((docRef) => {
             console.log("Document written", docRef.id);
             this.storeTag(docRef.id);
+          })
+          .then(() => {
+            this.ime = "";
+            this.opis = "";
+            this.tags = [];
           })
           .then(() => {
             this.$bvModal.hide("modal");

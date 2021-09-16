@@ -3,7 +3,6 @@
     <div id="nav">
       <div class="container">
         <b-row>
-          <b-col cols="1"></b-col>
           <b-col>
             <b-navbar-brand tag="h1"> FamPoloShopping </b-navbar-brand>
           </b-col>
@@ -16,9 +15,9 @@
                 >Login</b-button
               >
               <b-button class="button" v-else @click="exit()">Logout</b-button>
-              <b-button class="button" v-if="store.userVerified" @click="$router.push('/shoplist')"
+<!--               <b-button class="button" v-if="store.userVerified" @click="$router.push('/shoplist')"
                 >ShopList</b-button
-              >
+              > -->
               <b-button v-if="!store.userVerified" @click="$router.push('about')">About</b-button>
             </b-nav>
           </b-col>
